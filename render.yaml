@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: weather-report-server
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: weather-report-db
+          property: connectionString
+      # 같은 리전 내부 연결이라 SSL 불필요. 외부 URL 사용 시 true 로 변경.
+      - key: DATABASE_SSL
+        value: "false"
+      # 아래 3개는 배포 후 Render 대시보드에서 직접 값 입력 (보안상 코드에 넣지 않음)
+      - key: GROQ_API_KEY
+        sync: false
+      - key: KAKAO_REST_API_KEY
+        sync: false
+      - key: KMA_API_KEY
+        sync: false
+
+databases:
+  - name: weather-report-db
+    plan: free
